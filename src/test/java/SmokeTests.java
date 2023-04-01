@@ -1,9 +1,14 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
-import org.junit.*;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import pages.AddCustomerPage;
 import pages.CustomersListPage;
 import pages.MainPage;
@@ -14,14 +19,13 @@ import java.util.stream.Collectors;
 
 @Epic("Smoke Tests")
 public class SmokeTests {
-    static WebDriver driver;
-    static MainPage mainPage;
-    static AddCustomerPage addCustomerPage;
-    static CustomersListPage customersListPage;
-
+    WebDriver driver;
+    MainPage mainPage;
+    AddCustomerPage addCustomerPage;
+    CustomersListPage customersListPage;
 
     @BeforeClass
-    public static void setup() {
+    public void setup() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         driver = new ChromeDriver(options);
@@ -31,7 +35,7 @@ public class SmokeTests {
         customersListPage = new CustomersListPage(driver);
     }
 
-    @Before
+    @BeforeMethod
     public void openStartPage() {
         driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         driver.manage().window().maximize();
@@ -66,7 +70,7 @@ public class SmokeTests {
 
         firstNames = firstNames.stream().sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
 
-        Assert.assertArrayEquals(firstNames.toArray(), sortedFirstNames.toArray());
+        Assert.assertEquals(firstNames.toArray(), sortedFirstNames.toArray());
     }
 
     @Test
@@ -114,7 +118,7 @@ public class SmokeTests {
     }
 
     @AfterClass
-    public static void quit() {
+    public void quit() {
         driver.quit();
     }
 }
