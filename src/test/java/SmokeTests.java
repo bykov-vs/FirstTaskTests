@@ -1,3 +1,5 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
 import org.junit.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,6 +12,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Epic("Smoke Tests")
 public class SmokeTests {
     static WebDriver driver;
     static MainPage mainPage;
@@ -36,6 +39,7 @@ public class SmokeTests {
     }
 
     @Test
+    @Description("Создание клиента")
     public void addCustomerTest() {
         String firstName = "Test";
         String lastName = "Test";
@@ -51,6 +55,7 @@ public class SmokeTests {
     }
 
     @Test
+    @Description("Сортировка клиентов по имени")
     public void sortCustomersByFirstNameTest() {
         mainPage.customers();
 
@@ -65,29 +70,47 @@ public class SmokeTests {
     }
 
     @Test
-    public void searchCustomerTest() {
+    @Description("Поиск клиента по имени")
+    public void searchCustomerByFirstNameTest() {
         String firstName = "Harry";
-        String lastName = "Potter";
-        String postCode = "E725JB";
-        String accountNumber = "1004";
-        boolean result = false;
-
         mainPage.customers();
-
         customersListPage.enterSearchTerm(firstName);
-        int size1 = customersListPage.getFirstNames().size();
+        int size = customersListPage.getFirstNames().size();
+
+        Assert.assertTrue(size > 0);
+    }
+
+    @Test
+    @Description("Поиск клиента по фамилии")
+    public void searchCustomerByLastNameTest(){
+        String lastName = "Potter";
+        mainPage.customers();
         customersListPage.enterSearchTerm(lastName);
-        int size2 = customersListPage.getFirstNames().size();
+        int size = customersListPage.getFirstNames().size();
+
+        Assert.assertTrue(size > 0);
+    }
+
+    @Test
+    @Description("Поиск клиента по почтовому индексу")
+    public void searchCustomerByPostCodeTest(){
+        String postCode = "E725JB";
+        mainPage.customers();
         customersListPage.enterSearchTerm(postCode);
-        int size3 = customersListPage.getFirstNames().size();
+        int size = customersListPage.getFirstNames().size();
+
+        Assert.assertTrue(size > 0);
+    }
+
+    @Test
+    @Description("Поиск клиента по номеру аккаунта")
+    public void searchCustomerByAccountNumberTest(){
+        String accountNumber = "1004";
+        mainPage.customers();
         customersListPage.enterSearchTerm(accountNumber);
-        int size4 = customersListPage.getFirstNames().size();
+        int size = customersListPage.getFirstNames().size();
 
-        if ((size1 > 0) && (size2 > 0) && (size3 > 0) && (size4 > 0)) {
-            result = true;
-        }
-
-        Assert.assertTrue(result);
+        Assert.assertTrue(size > 0);
     }
 
     @AfterClass
