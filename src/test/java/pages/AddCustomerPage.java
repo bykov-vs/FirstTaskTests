@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -26,16 +27,19 @@ public class AddCustomerPage {
         PageFactory.initElements(driver, this);
     }
 
+    @Step("Заполнение формы значениями")
     public void fillOutForm(String firstName, String lastName, String postCode) {
         this.firstNameInput.sendKeys(firstName);
         this.lastNameInput.sendKeys(lastName);
         this.postCode.sendKeys(postCode);
     }
 
+    @Step("Отправка формы")
     public void submitForm() {
         this.addCustomerSubmitButton.click();
     }
 
+    //TODO
     public String getAlertMessage() {
         Alert alert = driver.switchTo().alert();
         String message = alert.getText();

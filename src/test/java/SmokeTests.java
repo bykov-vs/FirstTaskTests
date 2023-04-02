@@ -32,6 +32,7 @@ public class SmokeTests {
         addCustomerPage.submitForm();
         String alertMessage = addCustomerPage.getAlertMessage();
 
+        //В диалоговом окне сообщение об успешно созданном клиенте
         Assert.assertEquals("Customer added successfully with customer id :",
                 alertMessage.split("\\d")[0]);
     }
@@ -48,6 +49,7 @@ public class SmokeTests {
         customersListPage.sortByFirstName();
         String[] expected = customersListPage.getFirstNames();
 
+        //Записи отсортированы по возрастанию
         Assert.assertEquals(actual, expected);
     }
 
@@ -62,6 +64,7 @@ public class SmokeTests {
         customersListPage.sortByFirstName();
         String[] expected = customersListPage.getFirstNames();
 
+        //Записи отсортированы по убыванию
         Assert.assertEquals(actual, expected);
     }
 
@@ -75,6 +78,7 @@ public class SmokeTests {
         customersListPage.enterSearchTerm(term);
         int size = customersListPage.getFirstNames().length;
 
+        //Поиск выдал как минимум одну запись в таблице
         Assert.assertTrue(size > 0);
     }
 

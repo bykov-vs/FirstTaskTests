@@ -1,5 +1,6 @@
 package pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -22,16 +23,19 @@ public class CustomersListPage {
         PageFactory.initElements(driver, this);
     }
 
+    @Step("Сортировка таблицы по именам")
     public void sortByFirstName() {
         firstNameCol.click();
     }
 
+    @Step("Получение имен клиентов из таблицы")
     public String[] getFirstNames() {
         return firstNames.stream()
                 .map(WebElement::getText)
                 .toArray(String[]::new);
     }
 
+    @Step("Очистка поля для поиска и заполнение новым словом")
     public void enterSearchTerm(String term) {
         searchInput.clear();
         this.searchInput.sendKeys(term);
