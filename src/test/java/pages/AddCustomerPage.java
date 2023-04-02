@@ -39,7 +39,6 @@ public class AddCustomerPage {
         this.addCustomerSubmitButton.click();
     }
 
-    //TODO
     public String getAlertMessage() {
         Alert alert = driver.switchTo().alert();
         String message = alert.getText();

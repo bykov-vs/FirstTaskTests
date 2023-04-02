@@ -1,5 +1,6 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;

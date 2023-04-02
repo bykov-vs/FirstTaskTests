@@ -28,6 +28,4 @@ public class MainPage {
     public void customers() {
         this.customersButton.click();
     }
-
-
 }
