@@ -2,12 +2,11 @@ package pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CustomersListPage {
     @FindBy(xpath = "//table/thead/tr/td/a")
@@ -16,9 +15,7 @@ public class CustomersListPage {
     @FindBy(xpath = "//div[@class='input-group']/input")
     private WebElement searchInput;
 
-    @FindAll({
-            @FindBy(xpath = "//tbody/tr/td[1]")
-    })
+    @FindBy(xpath = "//tbody/tr/td[1]")
     List<WebElement> firstNames;
 
     public CustomersListPage(WebDriver driver) {
@@ -29,12 +26,10 @@ public class CustomersListPage {
         firstNameCol.click();
     }
 
-    public List<String> getFirstNames() {
-        List<String> sortedList = new ArrayList<>();
-        for (WebElement firstName : firstNames) {
-            sortedList.add(firstName.getText());
-        }
-        return sortedList;
+    public String[] getFirstNames() {
+        return firstNames.stream()
+                .map(WebElement::getText)
+                .toArray(String[]::new);
     }
 
     public void enterSearchTerm(String term) {

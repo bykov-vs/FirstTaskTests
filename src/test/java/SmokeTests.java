@@ -1,137 +1,86 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
-
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import pages.AddCustomerPage;
 import pages.CustomersListPage;
 import pages.MainPage;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.stream.Collectors;
+import utils.ChromeDriverCreator;
+import utils.DataProviders;
+import utils.SortHelper;
 
 @Epic("Smoke Tests")
 public class SmokeTests {
-
-    ChromeOptions options;
+    static ThreadLocal<WebDriver> localDriver;
 
     @BeforeClass
-    public void setOptions(){
-        options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
+    public void setup() {
+        localDriver = ThreadLocal.withInitial(ChromeDriverCreator::create);
     }
 
-    public WebDriver setup(){
-        WebDriver driver = new ChromeDriver(options);
-        driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofMinutes(2));
-        return driver;
-    }
-
-    @Test
+    @Test(dataProvider = "createCustomer", dataProviderClass = DataProviders.class)
     @Description("Создание клиента")
-    public void addCustomerTest() {
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
-        String firstName = "Test";
-        String lastName = "Test";
-        String postCode = "Test";
+    public void addCustomerTest(String firstName, String lastName, String postCode) {
+        MainPage mainPage = new MainPage(localDriver.get());
+        AddCustomerPage addCustomerPage = new AddCustomerPage(localDriver.get());
 
-        pages.mainPage.addCustomer();
-        pages.addCustomerPage.fillOutForm(firstName, lastName, postCode);
-        pages.addCustomerPage.submitForm();
-        String alertMessage = pages.addCustomerPage.getAlertMessage();
-
-        driver.quit();
+        mainPage.addCustomer();
+        addCustomerPage.fillOutForm(firstName, lastName, postCode);
+        addCustomerPage.submitForm();
+        String alertMessage = addCustomerPage.getAlertMessage();
 
         Assert.assertEquals("Customer added successfully with customer id :",
                 alertMessage.split("\\d")[0]);
     }
 
     @Test
-    @Description("Сортировка клиентов по имени")
-    public void sortCustomersByFirstNameTest() {
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
+    @Description("Сортировка клиентов по имени по возрастанию")
+    public void sortCustomersByFirstNameByAscTest() {
+        MainPage mainPage = new MainPage(localDriver.get());
+        CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
-        pages.mainPage.customers();
-        List<String> firstNames = pages.customersListPage.getFirstNames();
-        pages.customersListPage.sortByFirstName();
-        pages.customersListPage.sortByFirstName();
-        List<String> sortedFirstNames = pages.customersListPage.getFirstNames();
-        firstNames = firstNames.stream().sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.toList());
+        mainPage.customers();
+        String[] actual = SortHelper.sortByAsc(customersListPage.getFirstNames());
+        customersListPage.sortByFirstName();
+        customersListPage.sortByFirstName();
+        String[] expected = customersListPage.getFirstNames();
 
-        driver.quit();
-
-        Assert.assertEquals(firstNames.toArray(), sortedFirstNames.toArray());
+        Assert.assertEquals(actual, expected);
     }
 
     @Test
-    @Description("Поиск клиента по имени")
-    public void searchCustomerByFirstNameTest() {
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
-        String firstName = "Harry";
+    @Description("Сортировка клиентов по имени по убыванию")
+    public void sortCustomersByFirstNameByDescTest() {
+        MainPage mainPage = new MainPage(localDriver.get());
+        CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
-        pages.mainPage.customers();
-        pages.customersListPage.enterSearchTerm(firstName);
-        int size = pages.customersListPage.getFirstNames().size();
+        mainPage.customers();
+        String[] actual = SortHelper.sortByDesc(customersListPage.getFirstNames());
+        customersListPage.sortByFirstName();
+        String[] expected = customersListPage.getFirstNames();
 
-        driver.quit();
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test(dataProvider = "searchTerms", dataProviderClass = DataProviders.class)
+    @Description("Поиск клиента")
+    public void searchCustomer(String term) {
+        MainPage mainPage = new MainPage(localDriver.get());
+        CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
+
+        mainPage.customers();
+        customersListPage.enterSearchTerm(term);
+        int size = customersListPage.getFirstNames().length;
 
         Assert.assertTrue(size > 0);
     }
 
-    @Test
-    @Description("Поиск клиента по фамилии")
-    public void searchCustomerByLastNameTest(){
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
-        String lastName = "Potter";
-
-        pages.mainPage.customers();
-        pages.customersListPage.enterSearchTerm(lastName);
-        int size = pages.customersListPage.getFirstNames().size();
-
-        driver.quit();
-
-        Assert.assertTrue(size > 0);
-    }
-
-    @Test
-    @Description("Поиск клиента по почтовому индексу")
-    public void searchCustomerByPostCodeTest(){
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
-        String postCode = "E725JB";
-
-        pages.mainPage.customers();
-        pages.customersListPage.enterSearchTerm(postCode);
-        int size = pages.customersListPage.getFirstNames().size();
-
-        driver.quit();
-
-        Assert.assertTrue(size > 0);
-    }
-
-    @Test
-    @Description("Поиск клиента по номеру аккаунта")
-    public void searchCustomerByAccountNumberTest(){
-        WebDriver driver = setup();
-        TestPages pages = new TestPages(driver);
-        String accountNumber = "1004";
-
-        pages.mainPage.customers();
-        pages.customersListPage.enterSearchTerm(accountNumber);
-        int size = pages.customersListPage.getFirstNames().size();
-
-        driver.quit();
-
-        Assert.assertTrue(size > 0);
+    @AfterClass
+    public void quit() {
+        localDriver.get().quit();
+        localDriver.remove();
     }
 }
