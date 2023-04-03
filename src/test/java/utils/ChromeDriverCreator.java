@@ -15,7 +15,7 @@ public class ChromeDriverCreator {
         ChromeDriver driver = new ChromeDriver(options);
         driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofMinutes(1));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         return driver;
     }
 }

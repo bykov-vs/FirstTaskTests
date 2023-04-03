@@ -40,6 +40,22 @@ public class SmokeTests {
                 "Customer added successfully with customer id :");
     }
 
+    @Test(dataProvider = "createCustomerDuplicate", dataProviderClass = DataProviders.class)
+    @Description("Создание клиента")
+    public void addDuplicateCustomerTest(String firstName, String lastName, String postCode) {
+        MainPage mainPage = new MainPage(localDriver.get());
+        AddCustomerPage addCustomerPage = new AddCustomerPage(localDriver.get());
+
+        mainPage.addCustomer();
+        addCustomerPage.fillOutForm(firstName, lastName, postCode);
+        addCustomerPage.submitForm();
+        String actual = AlertExecutor.getAlertMessage(localDriver.get());
+
+        //В диалоговом окне сообщение об возможном дубликате клиента
+        Assert.assertEquals(actual,
+                "Please check the details. Customer may be duplicate.");
+    }
+
     @Test
     @Description("Сортировка клиентов по имени по возрастанию")
     public void sortCustomersByFirstNameByAscTest() {
@@ -84,6 +100,20 @@ public class SmokeTests {
 
         //Поиск выдал как минимум одну запись в таблице
         Assert.assertTrue(size > 0);
+    }
+
+    @Test(dataProvider = "wrongSearchTerms", dataProviderClass = DataProviders.class)
+    @Description("Поиск клиента по нескольким полям")
+    public void wrongSearchCustomer(String term){
+        MainPage mainPage = new MainPage(localDriver.get());
+        CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
+
+        mainPage.customers();
+        customersListPage.enterSearchTerm(term);
+        int size = customersListPage.getFirstNames().length;
+
+        //Поиск не выдал ни одной записи
+        Assert.assertEquals(size, 0);
     }
 
     @AfterMethod
