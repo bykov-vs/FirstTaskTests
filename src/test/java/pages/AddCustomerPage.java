@@ -10,13 +10,13 @@ import org.openqa.selenium.support.PageFactory;
 public class AddCustomerPage {
     private WebDriver driver;
 
-    @FindBy(xpath = "//div[1]/input")
+    @FindBy(xpath = "(//input[contains(@class,'form-control')])[1]")
     private WebElement firstNameInput;
 
-    @FindBy(xpath = "//div[2]/input")
+    @FindBy(xpath = "(//input[contains(@class,'form-control')])[2]")
     private WebElement lastNameInput;
 
-    @FindBy(xpath = "//div[3]/input")
+    @FindBy(xpath = "(//input[contains(@class,'form-control')])[3]")
     private WebElement postCode;
 
     @FindBy(css = "button[type='submit']")

@@ -16,7 +16,7 @@ public class CustomersListPage {
     @FindBy(xpath = "//table/thead/tr/td/a")
     private WebElement firstNameCol;
 
-    @FindBy(xpath = "//div[@class='input-group']/input")
+    @FindBy(xpath = "//input[@type='text']")
     private WebElement searchInput;
 
     public CustomersListPage(WebDriver driver) {
