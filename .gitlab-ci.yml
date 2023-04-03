@@ -11,3 +11,7 @@ allure-reports:
   stage: reports
   script:
     - allure serve
+  artifacts:
+    paths:
+      - allure-results
+
