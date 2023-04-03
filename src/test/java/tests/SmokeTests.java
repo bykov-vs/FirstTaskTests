@@ -1,11 +1,12 @@
+package tests;
+
+import alerts.AlertExecutor;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import pages.AddCustomerPage;
 import pages.CustomersListPage;
 import pages.MainPage;
@@ -15,11 +16,11 @@ import utils.SortHelper;
 
 @Epic("Smoke Tests")
 public class SmokeTests {
-    static ThreadLocal<WebDriver> localDriver;
+    static ThreadLocal<WebDriver> localDriver = new ThreadLocal<>();
 
-    @BeforeClass
+    @BeforeMethod
     public void setup() {
-        localDriver = ThreadLocal.withInitial(ChromeDriverCreator::create);
+        localDriver.set(ChromeDriverCreator.create());
     }
 
     @Test(dataProvider = "createCustomer", dataProviderClass = DataProviders.class)
@@ -31,11 +32,11 @@ public class SmokeTests {
         mainPage.addCustomer();
         addCustomerPage.fillOutForm(firstName, lastName, postCode);
         addCustomerPage.submitForm();
-        String alertMessage = addCustomerPage.getAlertMessage();
+        String alertMessage = AlertExecutor.getAlertMessage(localDriver.get());
 
         //В диалоговом окне сообщение об успешно созданном клиенте
-        Assert.assertEquals("Customer added successfully with customer id :",
-                alertMessage.split("\\d")[0]);
+        Assert.assertEquals(alertMessage.split("\\d")[0],
+                "Customer added successfully with customer id :");
     }
 
     @Test
@@ -45,10 +46,10 @@ public class SmokeTests {
         CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
         mainPage.customers();
-        String[] actual = SortHelper.sortByAsc(customersListPage.getFirstNames());
+        String[] expected = SortHelper.sortByAsc(customersListPage.getFirstNames());
         customersListPage.sortByFirstName();
         customersListPage.sortByFirstName();
-        String[] expected = customersListPage.getFirstNames();
+        String[] actual = customersListPage.getFirstNames();
 
         //Записи отсортированы по возрастанию
         Assert.assertEquals(actual, expected);
@@ -61,9 +62,9 @@ public class SmokeTests {
         CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
         mainPage.customers();
-        String[] actual = SortHelper.sortByDesc(customersListPage.getFirstNames());
+        String[] expected = SortHelper.sortByDesc(customersListPage.getFirstNames());
         customersListPage.sortByFirstName();
-        String[] expected = customersListPage.getFirstNames();
+        String[] actual = customersListPage.getFirstNames();
 
         //Записи отсортированы по убыванию
         Assert.assertEquals(actual, expected);
@@ -83,7 +84,7 @@ public class SmokeTests {
         Assert.assertTrue(size > 0);
     }
 
-    @AfterClass
+    @AfterMethod
     public void quit() {
         localDriver.get().quit();
         localDriver.remove();

@@ -10,13 +10,13 @@ import org.openqa.selenium.support.PageFactory;
 public class AddCustomerPage {
     private WebDriver driver;
 
-    @FindBy(xpath = "//div[@class='form-group'][1]/input")
+    @FindBy(xpath = "//div[1]/input")
     private WebElement firstNameInput;
 
-    @FindBy(xpath = "//div[@class='form-group'][2]/input")
+    @FindBy(xpath = "//div[2]/input")
     private WebElement lastNameInput;
 
-    @FindBy(xpath = "//div[@class='form-group'][3]/input")
+    @FindBy(xpath = "//div[3]/input")
     private WebElement postCode;
 
     @FindBy(css = "button[type='submit']")
@@ -39,10 +39,5 @@ public class AddCustomerPage {
         this.addCustomerSubmitButton.click();
     }
 
-    public String getAlertMessage() {
-        Alert alert = driver.switchTo().alert();
-        String message = alert.getText();
-        alert.accept();
-        return message;
-    }
+
 }
