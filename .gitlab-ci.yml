@@ -10,7 +10,7 @@ unit-test-job:
 allure-reports:
   stage: reports
   script:
-    - allure serve
+    - mvn allure:serve
   artifacts:
     paths:
       - allure-results
