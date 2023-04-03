@@ -1,6 +1,6 @@
 package tests;
 
-import alerts.AlertExecutor;
+import alerts.AlertHandler;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +33,10 @@ public class SmokeTests {
         mainPage.addCustomer();
         addCustomerPage.fillOutForm(firstName, lastName, postCode);
         addCustomerPage.submitForm();
-        String actual = AlertExecutor.getAlertMessage(localDriver.get()).split("\\d")[0];
+
+        AlertHandler alertHandler = new AlertHandler(localDriver.get());
+        String actual = alertHandler.getAlertMessage().split("\\d")[0];
+        alertHandler.accept();
 
         //В диалоговом окне сообщение об успешно созданном клиенте
         Assert.assertEquals(actual,
@@ -49,7 +52,10 @@ public class SmokeTests {
         mainPage.addCustomer();
         addCustomerPage.fillOutForm(firstName, lastName, postCode);
         addCustomerPage.submitForm();
-        String actual = AlertExecutor.getAlertMessage(localDriver.get());
+
+        AlertHandler alertHandler = new AlertHandler(localDriver.get());
+        String actual = alertHandler.getAlertMessage();
+        alertHandler.accept();
 
         //В диалоговом окне сообщение об возможном дубликате клиента
         Assert.assertEquals(actual,
@@ -90,7 +96,7 @@ public class SmokeTests {
 
     @Test(dataProvider = "searchTerms", dataProviderClass = DataProviders.class)
     @Description("Поиск клиента")
-    public void searchCustomer(String term) {
+    public void searchCustomerTest(String term) {
         MainPage mainPage = new MainPage(localDriver.get());
         CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
@@ -104,7 +110,7 @@ public class SmokeTests {
 
     @Test(dataProvider = "wrongSearchTerms", dataProviderClass = DataProviders.class)
     @Description("Поиск клиента по нескольким полям")
-    public void wrongSearchCustomer(String term){
+    public void wrongSearchCustomerTest(String term){
         MainPage mainPage = new MainPage(localDriver.get());
         CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 

@@ -7,8 +7,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import pages.elements.Row;
-import pages.elements.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomersListPage {
@@ -19,27 +19,37 @@ public class CustomersListPage {
     @FindBy(xpath = "//div[@class='input-group']/input")
     private WebElement searchInput;
 
-    List<Row> rows;
-
     public CustomersListPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
     }
 
-    private void initRows() {
-        rows = new Table(driver.findElement(By.xpath("//tbody")))
-                .getRows();
+    private List<Row> getRows() {
+        List<Row> rows = new ArrayList<>();
+        List<WebElement> rowsElements = findRowsElements();
+        for (WebElement row : rowsElements) {
+            rows.add(new Row(row));
+        }
+        return rows;
+    }
+
+    private List<WebElement> findRowsElements(){
+        WebElement table = findTable();
+        return table.findElements(By.xpath("tr"));
+    }
+
+    private WebElement findTable(){
+        return driver.findElement(By.xpath("//tbody"));
     }
 
     @Step("Сортировка таблицы по именам")
     public void sortByFirstName() {
         firstNameCol.click();
-        initRows();
     }
 
     @Step("Получение имен клиентов из таблицы")
     public String[] getFirstNames() {
-        initRows();
+        List<Row> rows = getRows();
         return rows.stream().map((row) -> row.getCell(0).getText())
                 .toArray(String[]::new);
     }
@@ -48,6 +58,5 @@ public class CustomersListPage {
     public void enterSearchTerm(String term) {
         searchInput.clear();
         this.searchInput.sendKeys(term);
-        initRows();
     }
 }
