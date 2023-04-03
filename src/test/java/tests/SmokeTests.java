@@ -3,10 +3,11 @@ package tests;
 import alerts.AlertExecutor;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
-import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import pages.AddCustomerPage;
 import pages.CustomersListPage;
 import pages.MainPage;
@@ -32,10 +33,10 @@ public class SmokeTests {
         mainPage.addCustomer();
         addCustomerPage.fillOutForm(firstName, lastName, postCode);
         addCustomerPage.submitForm();
-        String alertMessage = AlertExecutor.getAlertMessage(localDriver.get());
+        String actual = AlertExecutor.getAlertMessage(localDriver.get()).split("\\d")[0];
 
         //В диалоговом окне сообщение об успешно созданном клиенте
-        Assert.assertEquals(alertMessage.split("\\d")[0],
+        Assert.assertEquals(actual,
                 "Customer added successfully with customer id :");
     }
 
@@ -46,6 +47,7 @@ public class SmokeTests {
         CustomersListPage customersListPage = new CustomersListPage(localDriver.get());
 
         mainPage.customers();
+
         String[] expected = SortHelper.sortByAsc(customersListPage.getFirstNames());
         customersListPage.sortByFirstName();
         customersListPage.sortByFirstName();
