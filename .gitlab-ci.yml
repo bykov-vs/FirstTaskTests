@@ -1,0 +1,17 @@
+stages:
+  - test
+  - reports
+
+unit-test-job:
+  stage: test
+  script:
+    - mvn clean test
+
+allure-reports:
+  stage: reports
+  script:
+    - mvn allure:serve
+  artifacts:
+    paths:
+      - target/allure-results
+
