@@ -23,6 +23,7 @@ public class SmokeTests {
     public void setOptions(){
         options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
+        System.setProperty("webdriver.chrome.driver","/");
     }
 
     public WebDriver setup(){
