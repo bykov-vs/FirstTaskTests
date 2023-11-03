@@ -21,6 +21,7 @@ public class SmokeTests {
 
     @BeforeMethod
     public void setup() {
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         localDriver.set(ChromeDriverCreator.create());
     }
 
