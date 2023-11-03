@@ -8,10 +8,11 @@ import java.time.Duration;
 
 public class ChromeDriverCreator {
     public static WebDriver create(){
+
         ChromeOptions options;
         options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-
+        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
         ChromeDriver driver = new ChromeDriver(options);
         driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
         driver.manage().window().maximize();
