@@ -24,12 +24,7 @@ public class SmokeTests {
 
     @BeforeMethod
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-//        localDriver.set(ChromeDriverCreator.create());
-        ChromeDriver driver = new ChromeDriver();
-        driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        localDriver.set(ChromeDriverCreator.create());
     }
 
     @Test(dataProvider = "createCustomer", dataProviderClass = DataProviders.class)
