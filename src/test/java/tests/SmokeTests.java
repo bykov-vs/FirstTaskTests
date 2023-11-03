@@ -4,6 +4,7 @@ import alerts.AlertHandler;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -15,6 +16,8 @@ import utils.ChromeDriverCreator;
 import utils.DataProviders;
 import utils.SortHelper;
 
+import java.time.Duration;
+
 @Epic("Smoke Tests")
 public class SmokeTests {
     static ThreadLocal<WebDriver> localDriver = new ThreadLocal<>();
@@ -22,7 +25,11 @@ public class SmokeTests {
     @BeforeMethod
     public void setup() {
         System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-        localDriver.set(ChromeDriverCreator.create());
+//        localDriver.set(ChromeDriverCreator.create());
+        ChromeDriver driver = new ChromeDriver();
+        driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/manager");
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
     }
 
     @Test(dataProvider = "createCustomer", dataProviderClass = DataProviders.class)
