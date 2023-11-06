@@ -8,7 +8,7 @@ import java.time.Duration;
 
 public class ChromeDriverCreator {
     public static WebDriver create(){
-        System.setProperty("webdriver.chrome.driver", "tools/chromedriver/chromedrive.exe");
+        System.setProperty("webdriver.chrome.driver", "tools/chromedriver/chromedriver.exe");
         ChromeOptions options;
         options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
